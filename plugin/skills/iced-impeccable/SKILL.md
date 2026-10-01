@@ -18,7 +18,11 @@ Impeccable's bounded-pass rule holds unchanged: build fully, inspect once with a
 ## Setup
 
 1. Run impeccable's `context` launcher exactly as its Setup says (`"<impeccable skill dir>/scripts/impeccable" context`, once per session, cwd at the user's project).
-2. PRODUCT.md `## Platform` is `desktop` and `## Stack` records `iced 0.14 (Rust)`. Impeccable 4.4.0 knows only `web`, `ios`, `android`, `adaptive`, so the engine treats `desktop` as unrecognised and falls back to web. Ignore its web-only directives: `MANUAL_DETECTOR_REQUIRED`, live-mode setup, the design hook, and `detect`. Directives that are platform-neutral (`CONTEXT_STALE`, `IMAGE_GEN_AVAILABLE`, `UPDATE_AVAILABLE`) are handled as impeccable says.
+2. PRODUCT.md `## Platform` is `desktop` and `## Stack` records `iced 0.14 (Rust)`. Impeccable 4.4.0 knows only `web`, `ios`, `android`, `adaptive`, so the launcher prints `WARNING: PRODUCT.md's ## Platform value desktop is not recognized; treating the project as web` and resolves `"platform": null`. Expected: do not "fix" the field and do not surface it to the user. Handle the launcher's directives like this:
+   - `MANUAL_DETECTOR_REQUIRED`: web-only; ignore it. Never run `impeccable detect` on an iced app.
+   - `IMAGE_TOOLS`: ignore it for screenshots; crops, zooms and comparisons go through `screenshot --crop X Y W H --zoom N` and `iced-impeccable sheet` ([reference/verify.md](reference/verify.md)), never `magick` or `ffmpeg`.
+   - `WORLD_DISCOVERY_REQUIRED`: the launcher does not recognise Rust views as a visual implementation (`"hasVisualImplementation": false`). An app with existing iced views has an incumbent implementation; the directive applies only to a new build or an explicit redesign, as it says.
+   - `AUTONOMY_DIRECTIVE_CHECK`, `SUBAGENT_AUTHORIZATION` and any other platform-neutral directive (`CONTEXT_STALE`, `UPDATE_AVAILABLE`, `IMAGE_GEN_AVAILABLE`): follow as impeccable says.
 3. Read [reference/iced.md](reference/iced.md).
 4. Before any UI edit, read impeccable's `craft-floor.md`, then the "Craft floor on iced" section of [reference/iced.md](reference/iced.md), which translates it.
 5. During impeccable `init`, write Platform `desktop` and Stack `iced 0.14 (Rust)`, and skip its live-mode configuration step.
