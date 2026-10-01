@@ -1,0 +1,41 @@
+# cargo-deny configuration. CI runs `cargo deny --log-level error check`
+# (suppresses the duplicate-version warnings of the iced/wgpu tree); run plain
+# `cargo deny check` locally to see them.
+
+[advisories]
+yanked = "deny"
+ignore = [
+    # paste is unmaintained (no vulnerability), pulled in by the wgpu/iced
+    # stack. Revisit when upstream drops it.
+    "RUSTSEC-2024-0436",
+    # ttf-parser is unmaintained (no vulnerability), pulled in through
+    # cosmic-text -> fontdb. Revisit when upstream drops it.
+    "RUSTSEC-2026-0192",
+]
+
+[licenses]
+# Permissive allowlist; every entry occurs in the current dependency tree.
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "0BSD",
+    "ISC",
+    "Zlib",
+    "BSL-1.0",
+    "CC0-1.0",
+    "Unicode-3.0",
+]
+confidence-threshold = 0.8
+
+[bans]
+# The wgpu/winit/iced tree carries duplicate versions of common crates.
+multiple-versions = "warn"
+wildcards = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

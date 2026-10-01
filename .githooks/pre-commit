@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Fast gate: mirror the CI format check so an unformatted commit never lands.
+# Enable once per clone: git config core.hooksPath .githooks
+set -euo pipefail
+
+if ! cargo fmt --check; then
+    echo
+    echo "pre-commit: rustfmt found unformatted code (see diff above)."
+    echo "  run: cargo fmt   then re-stage and commit."
+    exit 1
+fi
