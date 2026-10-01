@@ -52,5 +52,6 @@ git push origin main vX.Y.Z    # origin pushes to doodleshnookie and GitHub
 
 ```sh
 cargo install --path . --bin iced-impeccable --locked
+omp plugin marketplace update iced-impeccable    # re-copies the skill files
 omp plugin install --force iced-impeccable@iced-impeccable
 ```

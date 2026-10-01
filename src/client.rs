@@ -193,10 +193,9 @@ mod tests {
             absolute_paths("record v.mp4").unwrap(),
             format!("record {}", cwd.join("v.mp4").display())
         );
-        assert_eq!(
-            absolute_paths("screenshot /tmp/x.png").unwrap(),
-            "screenshot /tmp/x.png"
-        );
+        // Absolute on this platform (`/tmp/..` is only root-relative on Windows).
+        let absolute = format!("screenshot {}", cwd.join("x.png").display());
+        assert_eq!(absolute_paths(&absolute).unwrap(), absolute);
         assert_eq!(absolute_paths("tap Save").unwrap(), "tap Save");
     }
 }
