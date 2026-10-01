@@ -3,8 +3,16 @@ name = "iced_impeccable"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.91"
+authors = ["Hannes Uebelacker <1265813+tuco86@users.noreply.github.com>"]
 license = "MIT OR Apache-2.0"
 description = "Headless remote control for iced applications: offscreen rendering, input injection, widget inventory and screenshots over a local socket"
+repository = "https://github.com/tuco86/iced_impeccable"
+homepage = "https://github.com/tuco86/iced_impeccable"
+readme = "README.md"
+keywords = ["iced", "gui", "headless", "testing", "automation"]
+categories = ["gui", "development-tools::testing"]
+# The skill plugin, CI and README assets are not part of the crate.
+exclude = ["/plugin", "/.claude-plugin", "/.github", "/.githooks", "/assets", "/scripts"]
 
 [dependencies]
 iced = { version = "0.14", features = ["advanced"] }

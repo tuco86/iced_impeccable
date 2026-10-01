@@ -15,8 +15,10 @@ Every visual check of an iced app runs against a headless instance driven throug
 ## Start
 
 ```sh
-target/agent/debug/<app> --headless --control /tmp/<app>-agent-1.sock --size 1280x800 &
+target/agent/debug/<app> --headless --control /tmp/<app>-agent-1.sock --size 1280x800 2>/tmp/<app>-agent-1.log &
 ```
+
+A host started with a plain `&` dies when the shell that started it exits, and agent harnesses run each command in a fresh shell: the socket then never appears. Either start the host as a background job of the harness (a long-running/async command), detach it with `setsid <app> --headless ... </dev/null >/dev/null 2>/tmp/<app>-agent-1.log &`, or start it and run the first `ctl` batch in the same command. When `ctl` reports `No such file or directory` after 5 s, read the host's log before retrying.
 
 Flags: `--size WxH` (default: the app's window size, else 1024x768), `--scale F` (OS scale, default 1), `--appearance dark|light` (default dark), `--backend wgpu|tiny-skia`. Other argv entries stay the app's own.
 

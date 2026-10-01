@@ -53,12 +53,12 @@ Run when the user passes `integrate`, and whenever the target app does not yet s
 1. `Cargo.toml` of the app:
    ```toml
    [dependencies]
-   iced_impeccable = { path = "/home/hannes/work/git.doodleshnookie.net/tuco86/iced_impeccable", optional = true }
+   iced_impeccable = { git = "https://github.com/tuco86/iced_impeccable", optional = true }
 
    [features]
    remote = ["dep:iced_impeccable"]
    ```
-   When that path does not exist, use `iced_impeccable = { git = "ssh://git@git.doodleshnookie.net/tuco86/iced_impeccable.git", optional = true }`.
+   When a local checkout of iced_impeccable exists next to the app's repository, a `path` dependency on it works the same and picks up local changes.
 2. Wrap `main`: build the `iced::application(...)` value, then
    ```rust
    #[cfg(feature = "remote")]

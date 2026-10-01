@@ -1,21 +1,32 @@
 # iced_impeccable
 
+[![CI](https://github.com/tuco86/iced_impeccable/actions/workflows/ci.yml/badge.svg)](https://github.com/tuco86/iced_impeccable/actions/workflows/ci.yml)
+[![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](#license)
+[![iced 0.14](https://img.shields.io/badge/iced-0.14-blue.svg)](https://iced.rs)
+
 Headless remote control for [iced](https://iced.rs) 0.14 applications, built
 for coding agents that need to see and operate the UI they change, plus a
-companion skill that brings the `impeccable` design workflow to iced desktop
-apps.
+companion skill that brings the
+[impeccable](https://impeccable.style) design workflow to iced
+desktop apps.
 
-The app runs offscreen with its real hardware renderer behind a local control
-socket (a named pipe on Windows). A client sends one command per connection:
-input, widget lookups by id or text, waits, screenshots. The app's own tasks
-and subscriptions run unchanged.
+The app runs offscreen with its real renderer behind a local control socket
+(a named pipe on Windows). A client sends one command per connection: input,
+widget lookups by id or text, waits, screenshots. The app's own tasks and
+subscriptions run unchanged; no window, display server or desktop input is
+involved.
+
+![The demo app, captured headless with screenshot --annotate: every widget the interface reports is outlined and numbered, matching the node lines of tree](assets/demo-annotated.png)
+
+*The demo app captured with `screenshot --annotate`: the numbers match the
+node lines `tree` prints, so an agent clicks `tap #settings` or
+`tap --nth 2 Save` instead of guessing coordinates.*
 
 ## Integrate
 
 ```toml
 [dependencies]
-iced_impeccable = { path = "/home/hannes/work/git.doodleshnookie.net/tuco86/iced_impeccable", optional = true }
-# or: { git = "ssh://git@git.doodleshnookie.net/tuco86/iced_impeccable.git", optional = true }
+iced_impeccable = { git = "https://github.com/tuco86/iced_impeccable", optional = true }
 
 [features]
 remote = ["dep:iced_impeccable"]
@@ -49,7 +60,7 @@ fn main() -> iced::Result {
 ```sh
 cargo build --features remote
 target/debug/myapp --headless --control /tmp/myapp-1.sock [--size 1280x800] [--scale 2] \
-    [--appearance dark|light] [--backend wgpu|tiny-skia] &
+    [--appearance dark|light] [--backend wgpu|tiny-skia] 2>/tmp/myapp-1.log &
 target/debug/myapp ctl /tmp/myapp-1.sock info          # or: iced-impeccable ctl ...
 iced-impeccable ctl /tmp/myapp-1.sock - <<'EOF'         # batch: one command per line
 tree
@@ -68,6 +79,14 @@ for up to 5 s (no sleep after starting the host), prints the reply, and exits
 0 on `ok`, 1 on `err`, 2 on bad usage. With `-` it reads a batch from stdin
 (blank lines and `#` comments skipped) and stops at the first `err` unless
 `--keep-going`.
+
+A host started with a plain `&` belongs to the shell that started it. Tools
+that run each command in a fresh shell (agent harnesses) kill it when that
+command returns: start it as a background job of the harness, with
+`setsid ... &`, or drive it in the same command line that started it.
+
+`--backend tiny-skia` renders on the CPU and needs no GPU (CI uses it);
+`wgpu` is the default, so screenshots show the real GPU pipelines.
 
 ## Protocol
 
@@ -134,11 +153,25 @@ fits `--max-width` (default 2560).
 ## Skill
 
 The `iced-impeccable` skill (in `plugin/`) layers iced platform guidance and
-headless verification on top of the `impeccable` skill.
+headless verification on top of the
+[impeccable](https://impeccable.style) skill, which must be
+installed as well.
 
 ```sh
-cargo install --path . --bin iced-impeccable --locked
-omp plugin marketplace add /home/hannes/work/git.doodleshnookie.net/tuco86/iced_impeccable
+cargo install --git https://github.com/tuco86/iced_impeccable --bin iced-impeccable --locked
+```
+
+Claude Code:
+
+```text
+/plugin marketplace add tuco86/iced_impeccable
+/plugin install iced-impeccable@iced-impeccable
+```
+
+[omp](https://github.com/can1357/oh-my-pi), from a clone:
+
+```sh
+omp plugin marketplace add /path/to/iced_impeccable
 omp plugin install iced-impeccable@iced-impeccable
 ```
 
@@ -150,6 +183,26 @@ cargo run --example demo -- --headless --control /tmp/demo.sock &
 cargo run --example demo -- ctl /tmp/demo.sock tree
 ```
 
+## Development
+
+```sh
+git config core.hooksPath .githooks     # rustfmt check before each commit
+cargo fmt --check
+cargo clippy --all-targets -- -D warnings
+cargo test
+scripts/smoke.sh [tiny-skia|wgpu]       # demo headless, every protocol path
+cargo deny --log-level error check
+```
+
+Changes are listed in [CHANGELOG.md](CHANGELOG.md); the release checklist is
+[RELEASING.md](RELEASING.md). Agent-facing conventions are in
+[AGENTS.md](AGENTS.md).
+
 ## License
 
-MIT OR Apache-2.0
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or
+[MIT license](LICENSE-MIT) at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in this crate by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.

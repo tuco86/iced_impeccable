@@ -28,6 +28,8 @@ Two things live here:
 | `src/cli.rs`, `src/bin/iced-impeccable.rs` | standalone binary |
 | `examples/demo.rs` | demo app exercising every protocol path |
 | `plugin/skills/iced-impeccable/` | `SKILL.md` and `reference/*.md` |
+| `scripts/smoke.sh` | end-to-end smoke: demo headless, every protocol path checked |
+| `.github/workflows/ci.yml` | CI: Linux and Windows (clippy, test, smoke on tiny-skia), cargo-deny |
 
 ## Gate
 
@@ -35,10 +37,14 @@ Two things live here:
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 cargo test
-cargo build --example demo
+scripts/smoke.sh            # tiny-skia; `scripts/smoke.sh wgpu` for the GPU path
+cargo deny --log-level error check
 ```
 
 Windows compile check: `cargo check --target x86_64-pc-windows-gnu --all-targets`.
+CI runs the smoke test on Windows too (named pipe transport).
+
+Hooks: `git config core.hooksPath .githooks` (rustfmt check before commit).
 
 ## Headless rules
 
@@ -46,7 +52,9 @@ Windows compile check: `cargo check --target x86_64-pc-windows-gnu --all-targets
 - Never run, signal or replace the user's installed binaries.
 - Each instance gets its own socket (`/tmp/<app>-agent-N.sock`) and state dir.
 - Start with `--headless --control <socket> &`, no sleep; `ctl` retries the
-  connection for up to 5 s. Drive with batches (`ctl <socket> - <<'EOF'`).
+  connection for up to 5 s. A plain `&` host dies with the shell that started
+  it: in a harness, start it as a background job or with `setsid`, or drive it
+  in the same command. Drive with batches (`ctl <socket> - <<'EOF'`).
 - Locate with `tree` or `screenshot --annotate`, act with `tap`; never guess
   coordinates from pixels. Small details via `screenshot --crop .. --zoom N`.
 - End every instance with `quit`.
@@ -55,19 +63,14 @@ The skill's `reference/verify.md` is the full version for app work.
 
 ## Smoke test
 
-```sh
-cargo build --example demo --bin iced-impeccable
-target/debug/examples/demo --headless --control /tmp/iip-1.sock &
-target/debug/iced-impeccable ctl /tmp/iip-1.sock - <<'EOF'
-tree
-tap #name
-type Ada
-tap --nth 2 Save
-wait-for Saved Ada
-screenshot --annotate /tmp/iip-annotated.png
-quit
-EOF
-```
+`scripts/smoke.sh` builds the demo, starts it headless and checks the first
+reply line of every command; extend it when a command or reply changes.
+
+## Changes and releases
+
+User-visible changes go into `CHANGELOG.md` under `[Unreleased]`. The release
+checklist is `RELEASING.md`. `origin` pushes to both git.doodleshnookie.net
+(private) and GitHub (public); `github` is the GitHub remote alone.
 
 ## Commits
 
