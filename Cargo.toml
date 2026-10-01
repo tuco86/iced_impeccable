@@ -1,0 +1,38 @@
+[package]
+name = "iced_impeccable"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91"
+license = "MIT OR Apache-2.0"
+description = "Headless remote control for iced applications: offscreen rendering, input injection, widget inventory and screenshots over a local socket"
+
+[dependencies]
+iced = { version = "0.14", features = ["advanced"] }
+iced_runtime = "0.14"
+iced_futures = "0.14"
+iced_selector = "0.14"
+png = "0.18"
+font8x8 = "0.3"
+
+[target.'cfg(windows)'.dependencies]
+tokio = { version = "1", features = ["rt", "net", "io-util", "time"] }
+
+[dev-dependencies]
+iced = { version = "0.14", features = ["advanced", "tokio"] }
+
+[[bin]]
+name = "iced-impeccable"
+path = "src/bin/iced-impeccable.rs"
+
+[[example]]
+name = "demo"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+opt-level = 2
+debug = false
