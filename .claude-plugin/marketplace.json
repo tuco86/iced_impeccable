@@ -12,7 +12,7 @@
     {
       "name": "iced-impeccable",
       "description": "Companion to the impeccable skill for iced (Rust) desktop apps: iced-native platform guidance and headless verification (offscreen start, injected input, screenshots) instead of a browser.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Hannes Uebelacker",
         "email": "1265813+tuco86@users.noreply.github.com"

@@ -1,7 +1,7 @@
 ---
 name: iced-impeccable
 description: Use when designing, redesigning, critiquing, auditing, polishing or otherwise improving the UI of an iced (Rust) desktop app, or when visually verifying an iced app headless (start it offscreen, inject keyboard and mouse input, take screenshots). Companion to the impeccable skill: same commands and design doctrine, with iced-native platform guidance and headless verification instead of a browser.
-version: 0.1.0
+version: 0.1.1
 user-invocable: true
 argument-hint: "[impeccable command] [target] | verify | integrate"
 license: MIT OR Apache-2.0

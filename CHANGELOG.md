@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-02
+
 ### Added
 
 - `drop PATH` command: delivers `FileHovered` then `FileDropped` for `PATH`;
@@ -42,5 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   skill: iced platform reference, headless verification, audit, adapt,
   variants and DESIGN.md mapping.
 
-[Unreleased]: https://github.com/tuco86/iced_impeccable/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/tuco86/iced_impeccable/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/tuco86/iced_impeccable/releases/tag/v0.1.1
 [0.1.0]: https://github.com/tuco86/iced_impeccable/releases/tag/v0.1.0
