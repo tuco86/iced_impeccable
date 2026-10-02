@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/tuco86/iced_impeccable/actions/workflows/ci.yml/badge.svg)](https://github.com/tuco86/iced_impeccable/actions/workflows/ci.yml)
 [![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](#license)
+[![crates.io](https://img.shields.io/crates/v/iced_impeccable.svg)](https://crates.io/crates/iced_impeccable)
+[![docs.rs](https://img.shields.io/docsrs/iced_impeccable)](https://docs.rs/iced_impeccable)
 [![iced 0.14](https://img.shields.io/badge/iced-0.14-blue.svg)](https://iced.rs)
 
 Headless remote control for [iced](https://iced.rs) 0.14 applications, built
@@ -16,7 +18,7 @@ widget lookups by id or text, waits, screenshots. The app's own tasks and
 subscriptions run unchanged; no window, display server or desktop input is
 involved.
 
-![The demo app, captured headless with screenshot --annotate: every widget the interface reports is outlined and numbered, matching the node lines of tree](assets/demo-annotated.png)
+![The demo app, captured headless with screenshot --annotate: every widget the interface reports is outlined and numbered, matching the node lines of tree](https://raw.githubusercontent.com/tuco86/iced_impeccable/main/assets/demo-annotated.png)
 
 *The demo app captured with `screenshot --annotate`: the numbers match the
 node lines `tree` prints, so an agent clicks `tap #settings` or
@@ -26,7 +28,7 @@ node lines `tree` prints, so an agent clicks `tap #settings` or
 
 ```toml
 [dependencies]
-iced_impeccable = { git = "https://github.com/tuco86/iced_impeccable", optional = true }
+iced_impeccable = { version = "0.1", optional = true }
 
 [features]
 remote = ["dep:iced_impeccable"]
@@ -158,7 +160,7 @@ headless verification on top of the
 installed as well.
 
 ```sh
-cargo install --git https://github.com/tuco86/iced_impeccable --bin iced-impeccable --locked
+cargo install iced_impeccable --bin iced-impeccable --locked
 ```
 
 Claude Code:

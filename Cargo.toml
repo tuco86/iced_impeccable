@@ -11,8 +11,19 @@ homepage = "https://github.com/tuco86/iced_impeccable"
 readme = "README.md"
 keywords = ["iced", "gui", "headless", "testing", "automation"]
 categories = ["gui", "development-tools::testing"]
-# The skill plugin, CI and README assets are not part of the crate.
-exclude = ["/plugin", "/.claude-plugin", "/.github", "/.githooks", "/assets", "/scripts"]
+# The crate ships the library, the binary, the demo, README, CHANGELOG and the
+# licenses; the skill plugin, CI, repo tooling and README assets stay in git.
+exclude = [
+    "/plugin",
+    "/.claude-plugin",
+    "/.github",
+    "/.githooks",
+    "/assets",
+    "/scripts",
+    "/AGENTS.md",
+    "/RELEASING.md",
+    "/deny.toml",
+]
 
 [dependencies]
 iced = { version = "0.14", features = ["advanced"] }
