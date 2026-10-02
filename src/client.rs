@@ -145,12 +145,12 @@ fn connect(socket: &Path, wait: Duration) -> std::io::Result<channel::Connection
     }
 }
 
-/// A relative `screenshot` or `record` path resolved against this
+/// A relative `screenshot`, `record` or `drop` path resolved against this
 /// process's working directory, not the host's.
 fn absolute_paths(line: &str) -> std::io::Result<String> {
     let (name, rest) = line.split_once(' ').unwrap_or((line, ""));
     let (prefix, path) = match name {
-        "record" => ("", rest.trim_start()),
+        "record" | "drop" => ("", rest.trim_start()),
         "screenshot" => match split_options(rest, SCREENSHOT_OPTIONS) {
             Ok((_, path)) => (&rest[..rest.len() - path.len()], path),
             Err(_) => return Ok(line.to_owned()),
@@ -192,6 +192,10 @@ mod tests {
         assert_eq!(
             absolute_paths("record v.mp4").unwrap(),
             format!("record {}", cwd.join("v.mp4").display())
+        );
+        assert_eq!(
+            absolute_paths("drop f.txt").unwrap(),
+            format!("drop {}", cwd.join("f.txt").display())
         );
         // Absolute on this platform (`/tmp/..` is only root-relative on Windows).
         let absolute = format!("screenshot {}", cwd.join("x.png").display());

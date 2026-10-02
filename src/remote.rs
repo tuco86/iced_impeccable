@@ -20,6 +20,8 @@ pub struct Remote<P: Program> {
     app: Application<P>,
     heartbeat: Heartbeat<P::Message>,
     commands: Vec<Custom<P::Message>>,
+    windowed: Option<Box<dyn FnOnce()>>,
+    headless: Option<Box<dyn FnOnce()>>,
 }
 
 impl<P> Remote<P>
@@ -32,6 +34,8 @@ where
             app,
             heartbeat: Box::new(|_| false),
             commands: Vec::new(),
+            windowed: None,
+            headless: None,
         }
     }
 
@@ -40,6 +44,28 @@ where
     pub fn heartbeat(self, is_heartbeat: impl Fn(&P::Message) -> bool + 'static) -> Self {
         Self {
             heartbeat: Box::new(is_heartbeat),
+            ..self
+        }
+    }
+
+    /// Runs `setup` right before the windowed app starts, on the thread that
+    /// runs its event loop; never for `ctl` or `--headless`. Use it for
+    /// desktop integration such as tray icons. A second call replaces the
+    /// first.
+    pub fn windowed(self, setup: impl FnOnce() + 'static) -> Self {
+        Self {
+            windowed: Some(Box::new(setup)),
+            ..self
+        }
+    }
+
+    /// Runs `setup` in a `--headless` process after the host flags parsed
+    /// and [`is_headless`](crate::is_headless) turned true, before the app
+    /// boots. Use it for headless-only setup (stub devices, argument checks
+    /// via [`app_args`](crate::app_args)). A second call replaces the first.
+    pub fn headless(self, setup: impl FnOnce() + 'static) -> Self {
+        Self {
+            headless: Some(Box::new(setup)),
             ..self
         }
     }
@@ -94,11 +120,17 @@ where
                     std::process::exit(2);
                 }
             };
+            if let Some(setup) = self.headless {
+                setup();
+            }
             let hooks = Hooks {
                 heartbeat: self.heartbeat,
                 commands: self.commands,
             };
             host::run(self.app, hooks, host_args);
+        }
+        if let Some(setup) = self.windowed {
+            setup();
         }
         self.app.run()
     }

@@ -62,6 +62,8 @@ expect "^ok$" key left
 expect '^err unknown key "nokey"; keys: ' key nokey
 expect "^ok$" reset
 expect "^ok$" wait-gone Saved Ada
+expect "^ok$" drop "$dir/notes.txt"
+expect "^ok [0-9]+ [0-9]+ [0-9]+ [0-9]+$" wait-for Dropped notes.txt
 expect '^err unknown command "palette" \(see help\)$' palette
 expect "^ok$" appearance light
 expect "^ok .*/light.png 1100x720 scale 1$" screenshot --annotate "$dir/light.png"

@@ -6,6 +6,7 @@
 //! cargo run --example demo -- ctl /tmp/demo.sock tree
 //! ```
 
+use std::path::PathBuf;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use iced::widget::{
@@ -34,6 +35,7 @@ enum Message {
     ToggleSpinner,
     Density(Density),
     Reset,
+    Dropped(PathBuf),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -105,16 +107,24 @@ impl Demo {
                 self.name.clear();
                 self.status = None;
             }
+            Message::Dropped(path) => {
+                let name = path.file_name().map_or_else(
+                    || path.display().to_string(),
+                    |n| n.to_string_lossy().into_owned(),
+                );
+                self.status = Some(format!("Dropped {name}"));
+            }
         }
         Task::none()
     }
 
     fn subscription(&self) -> Subscription<Message> {
         let tick = iced::time::every(Duration::from_secs(1)).map(|_| Message::Tick);
+        let dropped = iced::event::listen_with(dropped);
         if self.spinning.is_some() {
-            Subscription::batch([tick, iced::window::frames().map(Message::Frame)])
+            Subscription::batch([tick, dropped, iced::window::frames().map(Message::Frame)])
         } else {
-            tick
+            Subscription::batch([tick, dropped])
         }
     }
 
@@ -177,6 +187,14 @@ impl Demo {
         container(column![header, body].spacing(24))
             .padding(24)
             .into()
+    }
+}
+
+/// A file dropped onto the window.
+fn dropped(event: iced::Event, _: iced::event::Status, _: iced::window::Id) -> Option<Message> {
+    match event {
+        iced::Event::Window(iced::window::Event::FileDropped(path)) => Some(Message::Dropped(path)),
+        _ => None,
     }
 }
 

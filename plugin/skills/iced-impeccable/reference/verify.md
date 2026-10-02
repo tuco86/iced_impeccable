@@ -53,6 +53,7 @@ Lines starting with `#` and blank lines are skipped, so a batch can be commented
 - Keyboard: `key SPEC` (`key tab`, `key shift+tab`, `key ctrl+s`, `key left`, `key esc`, `key enter`), `keydown` / `keyup` for held keys, `type TEXT` for text. Unknown key names answer with the full list.
 - Mouse: `move`, `down`, `up`, `click X Y [BUTTON] [MODS]`, `dblclick`, `drag X1 Y1 X2 Y2 [STEPS] [MS]`.
 - Clipboard: `clip` reads, `clip-set TEXT` writes.
+- Files: `drop PATH` drags a file onto the window and drops it.
 - App-specific commands registered by the app (`Remote::command`) are listed under `custom:` in `help`.
 
 ### Waiting

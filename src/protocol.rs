@@ -112,6 +112,11 @@ pub(crate) const USAGE: &[(&str, &str, &str)] = &[
     ),
     ("clip", "clip", "read the clipboard"),
     ("clip-set", "clip-set TEXT", "write the clipboard"),
+    (
+        "drop",
+        "drop PATH",
+        "drag a file onto the window and drop it",
+    ),
     ("quit", "quit", "close the window and exit: ok or ok forced"),
 ];
 
@@ -213,6 +218,7 @@ pub(crate) enum Command {
     Appearance(iced::theme::Mode),
     Clip,
     ClipSet(String),
+    Drop(PathBuf),
     Quit,
     /// A command the app registered with `Remote::command`; `args` is the
     /// raw remainder of the line.
@@ -499,6 +505,10 @@ impl Command {
                 Command::Clip
             }
             "clip-set" => Command::ClipSet(rest.to_owned()),
+            "drop" => {
+                required(rest)?;
+                Command::Drop(PathBuf::from(rest))
+            }
             "quit" => {
                 arity(0, 0)?;
                 Command::Quit

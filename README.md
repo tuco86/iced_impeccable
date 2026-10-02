@@ -55,6 +55,8 @@ fn main() -> iced::Result {
 - Give icon-only interactive widgets an id: `container(button(icon)).id("settings")`.
 - Code that parses argv uses `iced_impeccable::app_args()` (argv without the host flags).
 - Code that must not open OS dialogs checks `iced_impeccable::is_headless()`.
+- Desktop integration that must not run headless (tray icons) goes into
+  `.windowed(|| ...)`; headless-only setup into `.headless(|| ...)`.
 - Release builds never enable `remote`.
 
 ## Run
@@ -119,6 +121,7 @@ logical pixel times the scale.
 | `scale F` | `ok` |
 | `appearance dark\|light` | `ok` |
 | `clip`, `clip-set TEXT` | `ok TEXT`, `ok` |
+| `drop PATH` | `ok`; FileHovered then FileDropped |
 | `quit` | `ok`, or `ok forced` when the app ignored the close request for 5 s |
 | `<custom> [ARGS]` | `ok`, `err NAME: ...`, or `err unknown command "NAME" (see help)` |
 

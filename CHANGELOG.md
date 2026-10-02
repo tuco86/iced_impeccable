@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `drop PATH` command: delivers `FileHovered` then `FileDropped` for `PATH`;
+  `ctl` resolves a relative path against its own working directory.
+- `Remote::windowed` and `Remote::headless` setup hooks: run code only before
+  the windowed app or only in a `--headless` process.
+
 ## [0.1.0] - 2026-10-02
 
 ### Added

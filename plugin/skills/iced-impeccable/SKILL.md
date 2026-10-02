@@ -70,7 +70,7 @@ Run when the user passes `integrate`, and whenever the target app does not yet s
    ```
 3. Mark periodic subscription messages (`iced::time::every`, `iced::window::frames`) as heartbeats in the closure above, so `wait-idle` is not kept busy by them.
 4. Give icon-only interactive widgets an id: `container(button(icon).on_press(..)).id("settings")`, then address them with `tap #settings`. Pick-list entries and other widgets that report no text are reached the same way or via `tree`.
-5. App code that parses argv uses `iced_impeccable::app_args()` (argv without the host flags). App code that must not open OS dialogs (file pickers, message boxes) checks `iced_impeccable::is_headless()` and falls back.
+5. App code that parses argv uses `iced_impeccable::app_args()` (argv without the host flags). App code that must not open OS dialogs (file pickers, message boxes) checks `iced_impeccable::is_headless()` and falls back. Tray icons and other desktop integration go into `.windowed(..)`; headless-only setup into `.headless(..)`.
 6. App-specific actions the agent needs (reset state, restart, seed data) are registered with `.command("name", "summary", |args| Ok(Message::...))`.
 7. Release builds never enable `remote`.
 

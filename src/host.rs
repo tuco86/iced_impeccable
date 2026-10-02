@@ -863,6 +863,10 @@ where
                 self.clipboard.write(clipboard::Kind::Standard, text);
                 "ok".to_owned()
             }
+            Command::Drop(path) => self.input([
+                Event::Window(window::Event::FileHovered(path.clone())),
+                Event::Window(window::Event::FileDropped(path)),
+            ]),
             Command::Quit => {
                 self.quit_replies.push(reply);
                 let exits = self

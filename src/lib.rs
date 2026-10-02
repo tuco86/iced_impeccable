@@ -23,6 +23,9 @@
 //!   command (or, with `-`, a batch from stdin) and prints the reply;
 //! - anything else runs the app in its window as usual.
 //!
+//! [`Remote::windowed`] and [`Remote::headless`] run setup for only one of
+//! the two app modes, such as a tray icon or stub devices.
+//!
 //! `<bin> ctl <socket> help` lists the protocol. The standalone
 //! `iced-impeccable` binary offers the same client plus contact sheets.
 
