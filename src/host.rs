@@ -317,7 +317,10 @@ where
             appearance: args.appearance,
             maximized: false,
             cursor: mouse::Cursor::Unavailable,
-            clipboard: MemoryClipboard::default(),
+            clipboard: MemoryClipboard {
+                standard: args.clipboard.clone(),
+                primary: None,
+            },
             redraw: window::RedrawRequest::NextFrame,
             last_frame: now,
             last_activity: now,

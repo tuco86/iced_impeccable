@@ -16,9 +16,9 @@
 //! The binary then understands three command lines:
 //!
 //! - `<bin> --headless --control <socket> [--size WxH] [--scale F]
-//!   [--appearance dark|light] [--backend wgpu|tiny-skia]` runs the app
-//!   offscreen with a hardware renderer, controlled through a Unix socket
-//!   (on Windows a named pipe such as `myapp-agent-1`);
+//!   [--appearance dark|light] [--backend wgpu|tiny-skia] [--clipboard TEXT]`
+//!   runs the app offscreen with a hardware renderer, controlled through a
+//!   Unix socket (on Windows a named pipe such as `myapp-agent-1`);
 //! - `<bin> ctl [--wait MS] [--keep-going] <socket> <command...>` sends one
 //!   command (or, with `-`, a batch from stdin) and prints the reply;
 //! - anything else runs the app in its window as usual.
@@ -68,8 +68,8 @@ pub fn is_headless() -> bool {
 }
 
 /// The process arguments without the host flags (`--headless`, `--control`,
-/// `--size`, `--scale`, `--appearance`, `--backend` and their values), for
-/// apps that parse their own.
+/// `--size`, `--scale`, `--appearance`, `--backend`, `--clipboard` and their
+/// values), for apps that parse their own.
 pub fn app_args() -> Vec<OsString> {
     args::strip(std::env::args_os())
 }
