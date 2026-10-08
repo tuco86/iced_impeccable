@@ -9,18 +9,19 @@ use iced::Size;
 use crate::protocol::{parse_appearance, parse_extent, parse_scale};
 
 /// Flags that take a value.
-const VALUE_FLAGS: [&str; 5] = [
+const VALUE_FLAGS: [&str; 6] = [
     "--control",
     "--size",
     "--scale",
     "--appearance",
     "--backend",
+    "--clipboard",
 ];
 
 pub(crate) fn usage(bin: &str) -> String {
     format!(
         "usage: {bin} --headless --control <socket> [--size WxH] [--scale F] \
-         [--appearance dark|light] [--backend wgpu|tiny-skia]"
+         [--appearance dark|light] [--backend wgpu|tiny-skia] [--clipboard TEXT]"
     )
 }
 
@@ -33,6 +34,8 @@ pub(crate) struct HostArgs {
     pub(crate) scale: f32,
     pub(crate) appearance: iced::theme::Mode,
     pub(crate) backend: &'static str,
+    /// Text the clipboard holds when the app boots (`--clipboard`).
+    pub(crate) clipboard: Option<String>,
 }
 
 impl HostArgs {
@@ -42,6 +45,7 @@ impl HostArgs {
         let mut scale = 1.0;
         let mut appearance = iced::theme::Mode::Dark;
         let mut backend = "wgpu";
+        let mut clipboard = None;
         let mut args = args.iter();
         while let Some(arg) = args.next() {
             let Some(flag) = arg.to_str().filter(|a| VALUE_FLAGS.contains(a)) else {
@@ -59,6 +63,7 @@ impl HostArgs {
                 "--size" => size = Some(parse_size(value)?),
                 "--scale" => scale = parse_scale(value)?,
                 "--appearance" => appearance = parse_appearance(value)?,
+                "--clipboard" => clipboard = Some(value.to_owned()),
                 _ => {
                     backend = match value {
                         "wgpu" => "wgpu",
@@ -74,6 +79,7 @@ impl HostArgs {
             scale,
             appearance,
             backend,
+            clipboard,
         })
     }
 }
@@ -126,6 +132,8 @@ mod tests {
             "light",
             "--backend",
             "tiny-skia",
+            "--clipboard",
+            "griasdi:invite:x",
         ]))
         .unwrap();
         assert_eq!(args.control, PathBuf::from("/tmp/a.sock"));
@@ -133,6 +141,7 @@ mod tests {
         assert_eq!(args.scale, 2.0);
         assert_eq!(args.appearance, iced::theme::Mode::Light);
         assert_eq!(args.backend, "tiny-skia");
+        assert_eq!(args.clipboard.as_deref(), Some("griasdi:invite:x"));
     }
 
     #[test]
@@ -141,6 +150,7 @@ mod tests {
         assert!(HostArgs::parse(&os(&["--control", "a", "--size", "10"])).is_err());
         assert!(HostArgs::parse(&os(&["--control", "a", "--scale", "0"])).is_err());
         assert!(HostArgs::parse(&os(&["--control", "a", "--backend", "gl"])).is_err());
+        assert!(HostArgs::parse(&os(&["--control", "a", "--clipboard"])).is_err());
         assert!(HostArgs::parse(&os(&["--control"])).is_err());
     }
 
@@ -155,6 +165,8 @@ mod tests {
                 "--verbose",
                 "--size",
                 "1x1",
+                "--clipboard",
+                "hello",
                 "file"
             ])),
             os(&["app", "--verbose", "file"])

@@ -19,7 +19,7 @@ if [[ ${OS:-} == Windows_NT ]]; then
 else
     sock=$dir/demo.sock
 fi
-"$target/debug/examples/demo" --headless --control "$sock" --size 1100x720 \
+"$target/debug/examples/demo" --headless --control "$sock" --size 1100x720 --clipboard 'from start' \
     --backend "$backend" 2>"$dir/host.log" &
 host=$!
 trap 'kill "$host" 2>/dev/null || true; rm -rf "$dir"' EXIT
@@ -41,6 +41,7 @@ expect() {
 }
 
 expect "^ok pid [0-9]+ app demo size 1100x720 scale 1 appearance dark backend " info
+expect "^ok from start$" clip
 expect "^ok [0-9]+$" tree
 [[ $("$target/debug/iced-impeccable" ctl "$sock" tree) == *'hidden text="Row 60"'* ]] \
     || { echo "FAIL  tree lists Row 60 as hidden"; failures=$((failures + 1)); }
